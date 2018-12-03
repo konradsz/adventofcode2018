@@ -1,4 +1,5 @@
 use std::fs;
+use std::collections::HashSet;
 
 fn main() {
     let frequencies: Vec<i32> = fs::read_to_string("input")
@@ -9,7 +10,9 @@ fn main() {
     let sum: i32 = frequencies.iter().sum();
     println!("Sum: {}", sum);
 
-    let mut reached_frequencies = vec![0];
+    //let mut reached_frequencies = vec![0];
+    let mut reached_frequencies = HashSet::new();
+    reached_frequencies.insert(0);
     let mut sum = 0;
     for frequency in frequencies.iter().cycle() {
         sum += *frequency;
@@ -18,6 +21,6 @@ fn main() {
             println!("First frequency reached twice: {}", sum);
             break;
         }
-        reached_frequencies.push(sum);
+        reached_frequencies.insert(sum);
     }
 }
