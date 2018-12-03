@@ -10,7 +10,6 @@ fn main() {
     let sum: i32 = frequencies.iter().sum();
     println!("Sum: {}", sum);
 
-    //let mut reached_frequencies = vec![0];
     let mut reached_frequencies = HashSet::new();
     reached_frequencies.insert(0);
     let mut sum = 0;
