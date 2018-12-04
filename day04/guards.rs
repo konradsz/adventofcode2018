@@ -9,43 +9,28 @@ fn parse_minutes(input: &str) -> usize {
 
 fn main() {
     let content = fs::read_to_string("input").unwrap();
-
-    let mut records = Vec::new();
-    for line in content.lines() {
-        let (date, message) = line.split_at(18);
-        records.push((date, message.trim()));
-    }
-
-    records.sort_by(|a, b| a.0.cmp(&b.0));
-
-    let mut shift_indices = Vec::new();
-    for (index, entry) in records.iter().enumerate() {
-        if entry.1.contains("begins shift") {
-            shift_indices.push(index);
-        }
-    }
+    let mut records: Vec<&str> = content.lines().collect();
+    records.sort_by(|a, b| a.cmp(b));
 
     let mut guards_sleep_time = HashMap::new();
-    for index in shift_indices {
-        let id: usize = records[index].1
-            .split_whitespace()
-            .filter(|word| word.contains('#'))
-            .next()
-            .unwrap()
-            .trim_matches('#')
-            .parse()
-            .unwrap();
-        let entry = guards_sleep_time.entry(id).or_insert(vec![0; 60]);
-        let mut start_time = 0;
-        for i in index + 1..records.len() {
-            if records[i].1.contains("falls asleep") {
-                start_time = parse_minutes(records[i].0);
-            } else if records[i].1.contains("wakes up") {
-                for i in start_time..parse_minutes(records[i].0) {
-                    entry[i] += 1;
-                }
-            } else {
-                break;
+    let mut id = 0;
+    let mut start_time = 0;
+    for record in records {
+        if record.contains("begins shift") {
+            id = record
+                .split_whitespace()
+                .filter(|word| word.contains('#'))
+                .next()
+                .unwrap()
+                .trim_matches('#')
+                .parse()
+                .unwrap();
+        } else if record.contains("falls asleep") {
+            start_time = parse_minutes(record.split_at(18).0);
+        } else if record.contains("wakes up") {
+            let entry = guards_sleep_time.entry(id).or_insert(vec![0; 60]);
+            for i in start_time..parse_minutes(record.split_at(18).0) {
+                entry[i] += 1;
             }
         }
     }
