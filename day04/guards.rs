@@ -2,26 +2,32 @@ use std::collections::HashMap;
 use std::fs;
 
 fn parse_minutes(input: &str) -> usize {
-    let time = &input.split(']').next().unwrap();
-    let len = time.len();
-    let minutes = &time[len - 2..len];
+    let len = input.len();
+    let minutes = &input[len - 3..len - 1];
     minutes.parse().unwrap()
 }
 
 fn main() {
     let content = fs::read_to_string("input").unwrap();
-    let records: Vec<&str> = content.lines().collect();
+
+    let mut records = Vec::new();
+    for line in content.lines() {
+        let (date, message) = line.split_at(18);
+        records.push((date, message.trim()));
+    }
+
+    records.sort_by(|a, b| a.0.cmp(&b.0));
 
     let mut shift_indices = Vec::new();
     for (index, entry) in records.iter().enumerate() {
-        if entry.contains("begins shift") {
+        if entry.1.contains("begins shift") {
             shift_indices.push(index);
         }
     }
 
     let mut guards_sleep_time = HashMap::new();
     for index in shift_indices {
-        let id: usize = records[index]
+        let id: usize = records[index].1
             .split_whitespace()
             .filter(|word| word.contains('#'))
             .next()
@@ -32,10 +38,10 @@ fn main() {
         let entry = guards_sleep_time.entry(id).or_insert(vec![0; 60]);
         let mut start_time = 0;
         for i in index + 1..records.len() {
-            if records[i].contains("falls asleep") {
-                start_time = parse_minutes(records[i]);
-            } else if records[i].contains("wakes up") {
-                for i in start_time..parse_minutes(records[i]) {
+            if records[i].1.contains("falls asleep") {
+                start_time = parse_minutes(records[i].0);
+            } else if records[i].1.contains("wakes up") {
+                for i in start_time..parse_minutes(records[i].0) {
                     entry[i] += 1;
                 }
             } else {
