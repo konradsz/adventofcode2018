@@ -10,8 +10,8 @@ enum State {
 #[derive(Clone)]
 struct Worker {
     state: State,
-    task: char,
-    time: u32,
+    task: Option<char>,
+    remaining_time: u32,
 }
 
 fn get_next_task(requirements: &HashMap<char, Vec<char>>) -> Option<char> {
@@ -21,15 +21,7 @@ fn get_next_task(requirements: &HashMap<char, Vec<char>>) -> Option<char> {
         .map(|(task, _)| *task)
         .collect();
     tasks.sort();
-
-    match tasks.first() {
-        Some(task) => {
-            return Some(*task);
-        }
-        None => {
-            return None;
-        }
-    }
+    tasks.first().cloned()
 }
 
 fn mark_as_worked_on(requirement: char, requirements: &mut HashMap<char, Vec<char>>) {
@@ -63,8 +55,8 @@ fn main() {
     let mut workers = vec![
         Worker {
             state: State::Idle,
-            task: 0 as char,
-            time: 0
+            task: None,
+            remaining_time: 0
         };
         NUMBER_OF_WORKERS
     ];
@@ -75,9 +67,9 @@ fn main() {
             .iter_mut()
             .filter(|worker| worker.state == State::Busy)
         {
-            worker.time -= 1;
-            if worker.time == 0 {
-                mark_as_done(worker.task, &mut requirements);
+            worker.remaining_time -= 1;
+            if worker.remaining_time == 0 {
+                mark_as_done(worker.task.unwrap(), &mut requirements);
                 worker.state = State::Idle;
             }
         }
@@ -86,12 +78,11 @@ fn main() {
             .iter_mut()
             .filter(|worker| worker.state == State::Idle)
         {
-            let task = get_next_task(&requirements);
-            if task.is_some() {
+            if let Some(task) = get_next_task(&requirements) {
                 worker.state = State::Busy;
-                worker.task = task.unwrap();
-                worker.time = task.unwrap() as u32 - 64 + 60;
-                mark_as_worked_on(worker.task, &mut requirements);
+                worker.task = Some(task);
+                worker.remaining_time = task as u32 - 64 + 60;
+                mark_as_worked_on(worker.task.unwrap(), &mut requirements);
             }
         }
 
