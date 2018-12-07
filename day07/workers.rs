@@ -17,24 +17,24 @@ struct Worker {
 fn get_next_task(requirements: &HashMap<char, Vec<char>>) -> Option<char> {
     let mut tasks: Vec<char> = requirements
         .iter()
-        .filter(|(_, requirement)| requirement.is_empty())
+        .filter(|(_, reqs)| reqs.is_empty())
         .map(|(task, _)| *task)
         .collect();
     tasks.sort();
     tasks.first().cloned()
 }
 
-fn mark_as_worked_on(requirement: char, requirements: &mut HashMap<char, Vec<char>>) {
-    requirements.remove(&requirement);
+fn mark_as_worked_on(task: char, requirements: &mut HashMap<char, Vec<char>>) {
+    requirements.remove(&task);
 }
 
-fn mark_as_done(requirement: char, requirements: &mut HashMap<char, Vec<char>>) {
+fn mark_as_done(task: char, requirements: &mut HashMap<char, Vec<char>>) {
     requirements
         .values_mut()
-        .filter(|value| value.contains(&requirement))
-        .for_each(|value| {
-            let index = value.iter().position(|r| *r == requirement).unwrap();
-            value.remove(index);
+        .filter(|reqs| reqs.contains(&task))
+        .for_each(|reqs| {
+            let index = reqs.iter().position(|r| *r == task).unwrap();
+            reqs.remove(index);
         });
 }
 
