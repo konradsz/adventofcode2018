@@ -2,30 +2,33 @@ use std::collections::HashMap;
 use std::fs;
 
 #[derive(Clone, PartialEq)]
-enum WorkerState {
+enum State {
     Idle,
     Busy,
 }
 
 #[derive(Clone)]
 struct Worker {
-    state: WorkerState,
-    step: char,
+    state: State,
+    task: char,
     time: u32,
 }
 
-fn get_next_step(requirements: &HashMap<char, Vec<char>>) -> Option<char> {
-    let mut steps: Vec<char> = requirements
+fn get_next_task(requirements: &HashMap<char, Vec<char>>) -> Option<char> {
+    let mut tasks: Vec<char> = requirements
         .iter()
         .filter(|(_, requirement)| requirement.is_empty())
-        .map(|(step, _)| *step)
+        .map(|(task, _)| *task)
         .collect();
-    steps.sort();
+    tasks.sort();
 
-    if steps.first().is_some() {
-        Some(*steps.first().unwrap())
-    } else {
-        None
+    match tasks.first() {
+        Some(task) => {
+            return Some(*task);
+        }
+        None => {
+            return None;
+        }
     }
 }
 
@@ -59,39 +62,36 @@ fn main() {
     const NUMBER_OF_WORKERS: usize = 5;
     let mut workers = vec![
         Worker {
-            state: WorkerState::Idle,
-            step: 0 as char,
+            state: State::Idle,
+            task: 0 as char,
             time: 0
         };
         NUMBER_OF_WORKERS
     ];
 
     let mut total_time = 0;
-    while requirements.len() > 0 || workers
-        .iter()
-        .any(|worker| worker.state == WorkerState::Busy)
-    {
+    while requirements.len() > 0 || workers.iter().any(|worker| worker.state == State::Busy) {
         for worker in workers
             .iter_mut()
-            .filter(|worker| worker.state == WorkerState::Busy)
+            .filter(|worker| worker.state == State::Busy)
         {
             worker.time -= 1;
             if worker.time == 0 {
-                mark_as_done(worker.step, &mut requirements);
-                worker.state = WorkerState::Idle;
+                mark_as_done(worker.task, &mut requirements);
+                worker.state = State::Idle;
             }
         }
 
         for worker in workers
             .iter_mut()
-            .filter(|worker| worker.state == WorkerState::Idle)
+            .filter(|worker| worker.state == State::Idle)
         {
-            let step = get_next_step(&requirements);
-            if step.is_some() {
-                worker.state = WorkerState::Busy;
-                worker.step = step.unwrap();
-                worker.time = step.unwrap() as u32 - 64 + 60;
-                mark_as_worked_on(worker.step, &mut requirements);
+            let task = get_next_task(&requirements);
+            if task.is_some() {
+                worker.state = State::Busy;
+                worker.task = task.unwrap();
+                worker.time = task.unwrap() as u32 - 64 + 60;
+                mark_as_worked_on(worker.task, &mut requirements);
             }
         }
 
