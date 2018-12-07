@@ -1,14 +1,14 @@
 use std::collections::HashMap;
 use std::fs;
 
-fn get_next_step(requirements: &HashMap<char, Vec<char>>) -> char {
-    let mut steps: Vec<char> = requirements
+fn get_next_task(requirements: &HashMap<char, Vec<char>>) -> char {
+    let mut tasks: Vec<char> = requirements
         .iter()
         .filter(|(_, requirement)| requirement.is_empty())
-        .map(|(step, _)| *step)
+        .map(|(task, _)| *task)
         .collect();
-    steps.sort();
-    *steps.first().unwrap()
+    tasks.sort();
+    *tasks.first().unwrap()
 }
 
 fn remove_from_requirements(requirement: char, requirements: &mut HashMap<char, Vec<char>>) {
@@ -36,9 +36,9 @@ fn main() {
     }
 
     while requirements.len() > 0 {
-        let step = get_next_step(&requirements);
-        print!("{}", step);
-        remove_from_requirements(step, &mut requirements);
+        let task = get_next_task(&requirements);
+        print!("{}", task);
+        remove_from_requirements(task, &mut requirements);
     }
     println!("");
 }
