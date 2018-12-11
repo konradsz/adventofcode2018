@@ -5,13 +5,7 @@ fn calculate_total_power(x: i32, y: i32, serial_number: i32) -> i32 {
     total_power *= y;
     total_power += serial_number;
     total_power *= rack_id;
-    total_power = total_power
-        .to_string()
-        .chars()
-        .nth(total_power.to_string().len() - 3)
-        .unwrap()
-        .to_digit(10)
-        .unwrap() as i32;
+    total_power = (total_power / 100) % 10;
     total_power -= 5;
     total_power
 }
