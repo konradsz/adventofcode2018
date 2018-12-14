@@ -1,6 +1,8 @@
 use std::fs;
 use std::collections::VecDeque;
 use std::fmt;
+use std::collections::HashSet;
+use std::iter::FromIterator;
 
 // add printing mechanism for Element
 #[derive(PartialEq)]
@@ -156,15 +158,15 @@ fn print_track(track: &Vec<Vec<TrackElement>>, carts: &Vec<Cart>) {
     println!("");
 }
 
-fn check_if_carts_collide2(carts: &Vec<Cart>) -> bool {
-    carts.iter().zip(carts.iter().skip(1)).any(|(cart_a, cart_b)| cart_a.x == cart_b.x && cart_a.y == cart_b.y)
-}
-
 fn check_if_carts_collide(carts_positions: &VecDeque<(usize, usize)>) -> bool {
     //carts.iter().zip(carts.iter().skip(1)).any(|(cart_a, cart_b)| cart_a.x == cart_b.x && cart_a.y == cart_b.y)
 
-    carts_positions.iter().zip(carts_positions.iter().skip(1)).any(|(cart_a, cart_b)| cart_a.0 == cart_b.0 && cart_a.1 == cart_b.1)
-    //true
+    carts_positions.iter().zip(carts_positions.iter().skip(1)).any(|(cart_a, cart_b)| cart_a.0 == cart_b.0 && cart_a.1 == cart_b.1);
+    //let mut unique = HashSet::new();
+    //carts_positions.iter().for_each(|cart| unique.insert((cart.0, cart.1)));
+    let unique: HashSet<(usize, usize)> = HashSet::from_iter(carts_positions.iter().cloned());
+
+    unique.len() != carts_positions.len()
 }
 
 fn main() {
@@ -218,23 +220,50 @@ fn main() {
     //print_track(&track, &carts);
 
 
+    let mut crashed = Vec::new();
     'ticks: loop {
+        println!("TICK");
+        println!("Track before tick");
+        //print_track(&track, &carts);
+        if carts.len() == 1 {
+            println!("{}, {}", carts[0].x, carts[0].y);
+            break;
+        }
         let width = track.first().unwrap().len();
         carts.sort_by(|cart_a, cart_b| (cart_a.y * width + cart_a.x).cmp(&(cart_b.y * width + cart_b.x)));
         positions.clear();
         carts.iter().for_each(|cart| positions.push_back((cart.x, cart.y)));
         //println!("{}", positions.len());
+        //println!("{:?}", positions);
         for cart in carts.iter_mut() {
+            println!("{:?}", positions);
+            if crashed.contains(&(cart.x, cart.y)) {
+                //positions.pop_front();
+                continue;
+            }
+            println!("before move: {:?}", (cart.x, cart.y));
             let new_position = cart.move_one_tick(&track);
+            println!("after move: {:?}", (cart.x, cart.y));
+            //println!("{:?}", new_position);
             positions.pop_front();
-            positions.push_front(new_position);
+            positions.push_back(new_position);
+//            println!("{:?}", positions);
+println!("{:?}", positions);
 
             if check_if_carts_collide(&positions) {
                 println!("BOOM at {:?}", new_position);
-                cart.has_crashed = true;
-                break 'ticks;
+                crashed.push(new_position);
+                positions.pop_back();
+                //break 'ticks;
             }
         }
+        carts = carts.into_iter().filter(|cart| !crashed.contains(&(cart.x, cart.y))).collect();
+        crashed.clear();
+        //println!("carts: {}, crashed: {:?}", carts.len(), crashed);
+        /*carts = carts
+                .into_iter()
+                .filter(|cart| !crashed.contains(&c.0))
+                .collect();*/
 
         //carts.sort_by(|cart_a, cart_b| cart_a.y.cmp(&cart_b.y));
 
@@ -247,7 +276,8 @@ fn main() {
         //carts.iter().zip(carts.iter()).filter(|(cart_a, cart_b)| cart_a.y != cart_b.y).for_each(|cart| print!("ASD")/*println!("({}, {})", (&cart).x, *cart.y)*/);
 //println!("{:?}", positions);
 //positions.iter().zip(positions.iter().skip(1)).filter(|(pos_a, pos_b)| pos_a.1 == pos_b.1).for_each(|pos| print!("{:?}", pos));println!("");
-
+//println!("Track after tick");
+//print_track(&track, &carts);
     }
 
     //print_track(&track, &carts);
