@@ -33,19 +33,19 @@ fn part_2() {
     let mut current_recipe_1 = 0;
     let mut current_recipe_2 = 1;
 
-    let expected = "635041";
+    let expected = &[6, 3, 5, 0, 4, 1];
     let expected_len = expected.len();
-    let mut i = 1;
+
     loop {
-        let new_recipe = recipes[current_recipe_1] + recipes[current_recipe_2];
+        let mut new_recipe = recipes[current_recipe_1] + recipes[current_recipe_2];
+        let mut two_recipes_pushed = false;
         if new_recipe > 9 {
             recipes.push(1);
-            recipes.push(new_recipe % 10);
-            i += 2;
-        } else {
-            recipes.push(new_recipe);
-            i += 1;
+            new_recipe %= 10;
+            two_recipes_pushed = true;
         }
+
+        recipes.push(new_recipe);
 
         current_recipe_1 += 1 + recipes[current_recipe_1];
         current_recipe_2 += 1 + recipes[current_recipe_2];
@@ -53,26 +53,16 @@ fn part_2() {
         current_recipe_1 %= recipes.len();
         current_recipe_2 %= recipes.len();
 
-        if recipes.len() >= expected_len + 1 {
-            let recipe = recipes
-                .iter()
-                .skip(recipes.len() - expected_len)
-                .take(expected_len)
-                .map(|recipe| std::char::from_digit(*recipe as u32, 10).unwrap())
-                .collect::<String>();
-            if recipe == expected {
-                println!("{}", i - expected_len + 1);
+        if recipes.len() > expected_len {
+            if &recipes[recipes.len() - expected_len..] == expected {
+                println!("{}", recipes.len() - expected_len);
                 break;
             }
+        }
 
-            let recipe = recipes
-                .iter()
-                .skip(recipes.len() - expected_len - 1)
-                .take(expected_len + 1)
-                .map(|recipe| std::char::from_digit(*recipe as u32, 10).unwrap())
-                .collect::<String>();
-            if recipe[..recipe.len() - 1] == *expected {
-                println!("{}", i - expected_len);
+        if two_recipes_pushed && recipes.len() > expected_len + 1 {
+            if &recipes[recipes.len() - expected_len - 1..recipes.len() - 1] == expected {
+                println!("{}", recipes.len() - expected_len - 1);
                 break;
             }
         }
