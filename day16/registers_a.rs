@@ -64,7 +64,7 @@ fn eqrr(registers: &mut Vec<usize>, a: usize, b: usize, c: usize) {
     registers[c] = (registers[a] == registers[b]) as usize;
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(PartialEq)]
 enum Opcode {
     Addr,
     Addi,
@@ -81,7 +81,7 @@ enum Opcode {
     Gtrr,
     Eqir,
     Eqri,
-    Eqrr
+    Eqrr,
 }
 
 fn main() {
@@ -89,22 +89,47 @@ fn main() {
     let content: Vec<&str> = content.lines().collect();
     let number_of_samples = content.len() / 4;
 
-    let ops = vec![Opcode::Addr, Opcode::Addi, Opcode::Mulr, Opcode::Muli, Opcode::Banr, Opcode::Bani, Opcode::Borr, Opcode::Bori,
-    Opcode::Setr, Opcode::Seti, Opcode::Gtir, Opcode::Gtri, Opcode::Gtrr, Opcode::Eqir, Opcode::Eqri, Opcode::Eqrr];
+    let ops = vec![
+        Opcode::Addr,
+        Opcode::Addi,
+        Opcode::Mulr,
+        Opcode::Muli,
+        Opcode::Banr,
+        Opcode::Bani,
+        Opcode::Borr,
+        Opcode::Bori,
+        Opcode::Setr,
+        Opcode::Seti,
+        Opcode::Gtir,
+        Opcode::Gtri,
+        Opcode::Gtrr,
+        Opcode::Eqir,
+        Opcode::Eqri,
+        Opcode::Eqrr,
+    ];
 
     let mut correct_samples = 0;
     for i in 0..=number_of_samples {
         let mut before = String::from(content[i * 4]);
         before.retain(|c| c.is_numeric());
-        let op: Vec<usize> = content[i * 4 + 1].split_whitespace().map(|c| c.parse().unwrap()).collect();
+        let op: Vec<usize> = content[i * 4 + 1]
+            .split_whitespace()
+            .map(|c| c.parse().unwrap())
+            .collect();
         let (a, b, c) = (op[1], op[2], op[3]);
         let mut after = String::from(content[i * 4 + 2]);
         after.retain(|c| c.is_numeric());
-        let after: Vec<usize> = after.chars().map(|c| c.to_digit(10).unwrap() as usize).collect();
+        let after: Vec<usize> = after
+            .chars()
+            .map(|c| c.to_digit(10).unwrap() as usize)
+            .collect();
 
         let mut matches = 0;
         for op in ops.iter() {
-            let mut registers: Vec<usize> = before.chars().map(|c| c.to_digit(10).unwrap() as usize).collect();
+            let mut registers: Vec<usize> = before
+                .chars()
+                .map(|c| c.to_digit(10).unwrap() as usize)
+                .collect();
             match op {
                 Opcode::Addr => addr(&mut registers, a, b, c),
                 Opcode::Addi => addi(&mut registers, a, b, c),
