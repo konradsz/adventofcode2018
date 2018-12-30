@@ -136,8 +136,220 @@ fn select_targets(attacking_army: &mut Vec<Group>, defending_army: &mut Vec<Grou
     }
 }
 
-fn main() {
+fn create_immune_system_army() -> Vec<Group> {
     let mut immune_system_army = Vec::new();
+    immune_system_army.push(Group::new(
+        1, // id
+        479, // size
+        3393, // hit points
+        66, // attack_damage
+        Type::Cold, // attack_type
+        8, // initiative
+        vec![Type::Radiation], // weaknesses
+        vec![], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        2, // id
+        2202, // size
+        4950, // hit points
+        18, // attack_damage
+        Type::Cold, // attack_type
+        2, // initiative
+        vec![Type::Fire], // weaknesses
+        vec![Type::Slashing], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        3, // id
+        8132, // size
+        9680, // hit points
+        9, // attack_damage
+        Type::Radiation, // attack_type
+        7, // initiative
+        vec![Type::Bludgeoning, Type::Fire], // weaknesses
+        vec![Type::Slashing], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        4, // id
+        389, // size
+        13983, // hit points
+        256, // attack_damage
+        Type::Cold, // attack_type
+        13, // initiative
+        vec![], // weaknesses
+        vec![Type::Bludgeoning], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        5, // id
+        1827, // size
+        5107, // hit points
+        24, // attack_damage
+        Type::Slashing, // attack_type
+        18, // initiative
+        vec![], // weaknesses
+        vec![], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        6, // id
+        7019, // size
+        2261, // hit points
+        3, // attack_damage
+        Type::Fire, // attack_type
+        16, // initiative
+        vec![], // weaknesses
+        vec![Type::Radiation, Type::Slashing, Type::Cold], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        7, // id
+        4736, // size
+        8421, // hit points
+        17, // attack_damage
+        Type::Slashing, // attack_type
+        3, // initiative
+        vec![Type::Cold], // weaknesses
+        vec![], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        8, // id
+        491, // size
+        3518, // hit points
+        65, // attack_damage
+        Type::Radiation, // attack_type
+        1, // initiative
+        vec![Type::Cold], // weaknesses
+        vec![Type::Fire, Type::Bludgeoning], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        9, // id
+        2309, // size
+        7353, // hit points
+        31, // attack_damage
+        Type::Bludgeoning, // attack_type
+        20, // initiative
+        vec![], // weaknesses
+        vec![Type::Radiation], // immunities
+    ));
+    immune_system_army.push(Group::new(
+        10, // id
+        411, // size
+        6375, // hit points
+        151, // attack_damage
+        Type::Bludgeoning, // attack_type
+        14, // initiative
+        vec![Type::Cold, Type::Fire], // weaknesses
+        vec![Type::Slashing], // immunities
+    ));
+    immune_system_army
+}
+
+fn create_infection_army() -> Vec<Group> {
+    let mut infection_army = Vec::new();
+    infection_army.push(Group::new(
+        11, // id
+        148, // size
+        31914, // hit points
+        416, // attack_damage
+        Type::Cold, // attack_type
+        4, // initiative
+        vec![Type::Bludgeoning], // weaknesses
+        vec![Type::Radiation, Type::Cold, Type::Fire], // immunities
+    ));
+    infection_army.push(Group::new(
+        12, // id
+        864, // size
+        38189, // hit points
+        72, // attack_damage
+        Type::Slashing, // attack_type
+        6, // initiative
+        vec![], // weaknesses
+        vec![], // immunities
+    ));
+    infection_army.push(Group::new(
+        13, // id
+        2981, // size
+        7774, // hit points
+        4, // attack_damage
+        Type::Fire, // attack_type
+        15, // initiative
+        vec![], // weaknesses
+        vec![Type::Bludgeoning, Type::Cold], // immunities
+    ));
+    infection_army.push(Group::new(
+        14, // id
+        5259, // size
+        22892, // hit points
+        8, // attack_damage
+        Type::Fire, // attack_type
+        5, // initiative
+        vec![], // weaknesses
+        vec![], // immunities
+    ));
+    infection_army.push(Group::new(
+        15, // id
+        318, // size
+        16979, // hit points
+        106, // attack_damage
+        Type::Bludgeoning, // attack_type
+        9, // initiative
+        vec![Type::Fire], // weaknesses
+        vec![], // immunities
+    ));
+    infection_army.push(Group::new(
+        16, // id
+        5017, // size
+        32175, // hit points
+        11, // attack_damage
+        Type::Bludgeoning, // attack_type
+        17, // initiative
+        vec![Type::Slashing], // weaknesses
+        vec![Type::Radiation], // immunities
+    ));
+    infection_army.push(Group::new(
+        17, // id
+        4308, // size
+        14994, // hit points
+        5, // attack_damage
+        Type::Fire, // attack_type
+        10, // initiative
+        vec![Type::Slashing], // weaknesses
+        vec![Type::Fire, Type::Cold], // immunities
+    ));
+    infection_army.push(Group::new(
+        18, // id
+        208, // size
+        14322, // hit points
+        133, // attack_damage
+        Type::Cold, // attack_type
+        19, // initiative
+        vec![Type::Radiation], // weaknesses
+        vec![], // immunities
+    ));
+    infection_army.push(Group::new(
+        19, // id
+        3999, // size
+        48994, // hit points
+        20, // attack_damage
+        Type::Cold, // attack_type
+        11, // initiative
+        vec![Type::Cold, Type::Slashing], // weaknesses
+        vec![], // immunities
+    ));
+    infection_army.push(Group::new(
+        20, // id
+        1922, // size
+        34406, // hit points
+        35, // attack_damage
+        Type::Slashing, // attack_type
+        12, // initiative
+        vec![Type::Slashing], // weaknesses
+        vec![], // immunities
+    ));
+    infection_army
+}
+
+fn main() {
+    let mut immune_system_army = create_immune_system_army();
+    let mut infection_army = create_infection_army();
+    /*let mut immune_system_army = Vec::new();
     immune_system_army.push(Group::new(
         1,
         17,
@@ -158,6 +370,7 @@ fn main() {
         vec![Type::Bludgeoning, Type::Slashing],
         vec![Type::Fire],
     ));
+
     let mut infection_army = Vec::new();
     infection_army.push(Group::new(
         3,
@@ -178,7 +391,7 @@ fn main() {
         4,
         vec![Type::Fire, Type::Cold],
         vec![Type::Radiation],
-    ));
+    ));*/
 
     while immune_system_army.len() > 0 && infection_army.len() > 0 {
         println!("----------------------------------------------------------------------------");
@@ -229,6 +442,7 @@ fn main() {
 
             if units_killed <= defending_group.size {
                 println!("Group {} attacks group {}, killing {} units", initiative.0, defending_group.index, units_killed);
+                println!("attacking_group_damage: {}, defending_group.hit_points: {}", attacking_group_damage, defending_group.hit_points);
                 defending_group.size -= units_killed;
             } else if units_killed > defending_group.size {
                 println!("Group {} attacks group {}, killing {} units", initiative.0, defending_group.index, defending_group.size);
